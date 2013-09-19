@@ -37,6 +37,14 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
     return [XMLReader dictionaryForXMLData:data error:error];
 }
 
++ (NSDictionary *)dictionaryForXMLParser:(NSXMLParser *)xmlParser error:(NSError **)error
+{
+    XMLReader *reader = [[XMLReader alloc] initWithError:error];
+    NSDictionary *rootDictionary = [reader objectWithParser:xmlParser options:0];
+    [reader release];
+    return rootDictionary;
+}
+
 + (NSDictionary *)dictionaryForXMLData:(NSData *)data options:(XMLReaderOptions)options error:(NSError **)error
 {
     XMLReader *reader = [[XMLReader alloc] initWithError:error];
@@ -49,6 +57,14 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
 {
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     return [XMLReader dictionaryForXMLData:data options:options error:error];
+}
+
++ (NSDictionary *)dictionaryForXMLParser:(NSXMLParser *)xmlParser options:(XMLReaderOptions)options error:(NSError **)error
+{
+    XMLReader *reader = [[XMLReader alloc] initWithError:error];
+    NSDictionary *rootDictionary = [reader objectWithParser:xmlParser options:options];
+    [reader release];
+    return rootDictionary;
 }
 
 #pragma mark -
@@ -72,6 +88,18 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
 
 - (NSDictionary *)objectWithData:(NSData *)data options:(XMLReaderOptions)options
 {
+    // Parse the XML
+    NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+    
+    NSDictionary *resultDict = [self objectWithParser:parser options:options];
+    
+    [parser release];
+
+    return resultDict;
+}
+
+- (NSDictionary *)objectWithParser:(NSXMLParser *)parser options:(XMLReaderOptions)options
+{
     // Clear out any old data
     [dictionaryStack release];
     [textInProgress release];
@@ -83,16 +111,12 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
     [dictionaryStack addObject:[NSMutableDictionary dictionary]];
     
     // Parse the XML
-    NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
-    
     [parser setShouldProcessNamespaces:(options & XMLReaderOptionsProcessNamespaces)];
     [parser setShouldReportNamespacePrefixes:(options & XMLReaderOptionsReportNamespacePrefixes)];
     [parser setShouldResolveExternalEntities:(options & XMLReaderOptionsResolveExternalEntities)];
     
     parser.delegate = self;
     BOOL success = [parser parse];
-	
-	[parser release];
     
     // Return the stack's root dictionary on success
     if (success)

@@ -23,7 +23,9 @@ typedef NSUInteger XMLReaderOptions;
 
 + (NSDictionary *)dictionaryForXMLData:(NSData *)data error:(NSError **)errorPointer;
 + (NSDictionary *)dictionaryForXMLString:(NSString *)string error:(NSError **)errorPointer;
++ (NSDictionary *)dictionaryForXMLParser:(NSXMLParser *)xmlParser error:(NSError **)errorPointer;
 + (NSDictionary *)dictionaryForXMLData:(NSData *)data options:(XMLReaderOptions)options error:(NSError **)errorPointer;
 + (NSDictionary *)dictionaryForXMLString:(NSString *)string options:(XMLReaderOptions)options error:(NSError **)errorPointer;
++ (NSDictionary *)dictionaryForXMLParser:(NSXMLParser *)xmlParser options:(XMLReaderOptions)options error:(NSError **)errorPointer;
 
 @end
