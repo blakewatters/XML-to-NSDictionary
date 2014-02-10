@@ -7,7 +7,7 @@
 
 #import "XMLReader.h"
 
-NSString *const kXMLReaderTextNodeKey		= @"@text";
+NSString *const kXMLReaderTextNodeKey = @"#text";
 
 @interface XMLReader ()
 
